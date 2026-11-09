@@ -1,3 +1,9 @@
+//"I, Rex Monson, acknowledge that I have worked on this
+// assignment independently, except where explicitly noted and referenced.
+// Any collaboration or use of external resources has been properly cited.
+// I am fully aware of the consequences of academic dishonesty and agree to
+// abide by the university's academic integrity policy.";
+
 #include <stdlib.h>
 #include <string.h>
 #include "code.h"
@@ -33,10 +39,10 @@
 
 int compare_int_asc(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    int x = *(const int *)a;
+    int y = *(const int *)b;
+
+    return (x > y) - (x < y);
 }
 
 /*
@@ -49,10 +55,10 @@ int compare_int_asc(const void *a, const void *b)
 
 int compare_int_desc(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    int x = *(const int *)a;
+    int y = *(const int *)b;
+
+    return (x < y) - (x > y);
 }
 
 /*
@@ -66,10 +72,10 @@ int compare_int_desc(const void *a, const void *b)
 
 int compare_float_asc(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    float x = *(const int *)a;
+    float y = *(const int *)b;
+
+    return (x > y) - (x < y);
 }
 
 /*
@@ -80,10 +86,10 @@ int compare_float_asc(const void *a, const void *b)
 
 int compare_float_desc(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    float x = *(const int *)a;
+    float y = *(const int *)b;
+
+    return (x < y) - (x > y);
 }
 
 /*
@@ -97,10 +103,10 @@ int compare_float_desc(const void *a, const void *b)
 
 int compare_str_asc(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    const char *x = (const char *)a;
+    const char *y = (const char *)b;
+
+    return strcmp(x, y);
 }
 
 /*
@@ -111,10 +117,10 @@ int compare_str_asc(const void *a, const void *b)
 
 int compare_str_desc(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    const char *x = (const char *)a;
+    const char *y = (const char *)b;
+
+    return strcmp(y, x);
 }
 
 /*
@@ -131,10 +137,10 @@ int compare_str_desc(const void *a, const void *b)
 
 int compare_strptr_asc(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    const char *x = *(const char * const *)a;
+    const char *y = *(const char * const *)b;
+
+    return strcmp(x, y);
 }
 
 /*
@@ -145,10 +151,10 @@ int compare_strptr_asc(const void *a, const void *b)
 
 int compare_strptr_desc(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    const char *x = *(const char * const *)a;
+    const char *y = *(const char * const *)b;
+
+    return strcmp(y, x);
 }
 
 /* ======================================================================
@@ -167,10 +173,20 @@ int compare_strptr_desc(const void *a, const void *b)
 
 void swap_elements(void *a, void *b, size_t size)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    (void)size;
+    if (a == NULL || b == NULL || a == b || size == 0)
+    {
+        return;
+    }
+
+    unsigned char *x = (unsigned char *)a;
+    unsigned char *y = (unsigned char *)b;
+
+    for (size_t i = 0; i < size; i++)
+    {
+        unsigned char temp = x[i];
+        x[i] = y[i];
+        y[i] = temp;
+    }
 }
 
 /*
@@ -194,11 +210,34 @@ void swap_elements(void *a, void *b, size_t size)
 
 void bubble_sort(void *base, size_t count, size_t size, Comparator compare)
 {
-    // TODO
-    (void)base;
-    (void)count;
-    (void)size;
-    (void)compare;
+    if (base == NULL || compare == NULL || size == 0 || count < 2)
+    {
+        return;
+    }
+
+    unsigned char *arr = (unsigned char *)base;
+
+    for (size_t k = 0; k < count - 1; k++)
+    {
+        int swapped = 0;
+
+        for (size_t i = 0; i < count - 1 - k; i++)
+        {
+            unsigned char *left = arr + i * size;
+            unsigned char *right = arr + (i + 1) * size;
+
+            if (compare(left, right) > 0)
+            {
+                swap_elements(left, right, size);
+                swapped = 1;
+            }
+        }
+
+        if (swapped == 0)
+        {
+            break;
+        }
+    }
 }
 
 /*
@@ -213,12 +252,35 @@ void bubble_sort(void *base, size_t count, size_t size, Comparator compare)
 
 bool is_sorted_array(const void *base, size_t count, size_t size, Comparator compare)
 {
-    // TODO
-    (void)base;
-    (void)count;
-    (void)size;
-    (void)compare;
-    return false;
+    if (compare == NULL || size == 0)
+    {
+        return false;
+    }
+
+    if (count < 2)
+    {
+        return true;
+    }
+
+    if (base == NULL)
+    {
+        return false;
+    }
+
+    const unsigned char *arr = (const unsigned char *)base;
+
+    for (size_t i = 0; i < count - 1; i++)
+    {
+        const unsigned char *left = arr + i * size;
+        const unsigned char *right = arr + (i + 1) * size;
+
+        if (compare(left, right) > 0)
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /* ======================================================================
@@ -241,10 +303,19 @@ bool is_sorted_array(const void *base, size_t count, size_t size, Comparator com
 
 void sort_ints(int *arr, size_t count, bool ascending)
 {
-    // TODO
-    (void)arr;
-    (void)count;
-    (void)ascending;
+    if (arr == NULL || count < 2)
+    {
+        return;
+    }
+
+    if (ascending)
+    {
+        qsort(arr, count, sizeof(int), compare_int_asc);
+    }
+    else
+    {
+        qsort(arr, count, sizeof(int), compare_int_desc);
+    }
 }
 
 /*
@@ -255,10 +326,19 @@ void sort_ints(int *arr, size_t count, bool ascending)
 
 void sort_floats(float *arr, size_t count, bool ascending)
 {
-    // TODO
-    (void)arr;
-    (void)count;
-    (void)ascending;
+    if (arr == NULL || count < 2)
+    {
+        return;
+    }
+
+    if (ascending)
+    {
+        qsort(arr, count, sizeof(float), compare_int_asc);
+    }
+    else
+    {
+        qsort(arr, count, sizeof(float), compare_int_desc);
+    }
 }
 
 /*
@@ -272,10 +352,19 @@ void sort_floats(float *arr, size_t count, bool ascending)
 
 void sort_names(char names[][NAME_LEN], size_t count, bool ascending)
 {
-    // TODO
-    (void)names;
-    (void)count;
-    (void)ascending;
+    if (names == NULL || count < 2)
+    {
+        return;
+    }
+
+    if (ascending)
+    {
+        qsort(names, count, NAME_LEN, compare_str_asc);
+    }
+    else
+    {
+        qsort(names, count, NAME_LEN, compare_str_desc);
+    }
 }
 
 /*
@@ -289,10 +378,19 @@ void sort_names(char names[][NAME_LEN], size_t count, bool ascending)
 
 void sort_string_pointers(char **strs, size_t count, bool ascending)
 {
-    // TODO
-    (void)strs;
-    (void)count;
-    (void)ascending;
+    if (strs == NULL || count < 2)
+    {
+        return;
+    }
+
+    if (ascending)
+    {
+        qsort(strs, count, sizeof(char *), compare_strptr_asc);
+    }
+    else
+    {
+        qsort(strs, count, sizeof(char *), compare_strptr_desc);
+    }
 }
 
 /*
@@ -307,10 +405,23 @@ void sort_string_pointers(char **strs, size_t count, bool ascending)
 
 int *sorted_copy(const int *arr, size_t count)
 {
-    // TODO
-    (void)arr;
-    (void)count;
-    return NULL;
+    if (arr == NULL || count == 0)
+    {
+        return NULL;
+    }
+
+    int *copy = malloc(count * sizeof(int));
+
+    if (copy == NULL)
+    {
+        return NULL;
+    }
+
+    memcpy(copy, arr, count * sizeof(int));
+
+    qsort(copy, count, sizeof(int), compare_int_asc);
+
+    return copy;
 }
 
 /*
@@ -327,11 +438,31 @@ int *sorted_copy(const int *arr, size_t count)
 
 bool find_median(const int *arr, size_t count, float *out)
 {
-    // TODO
-    (void)arr;
-    (void)count;
-    (void)out;
-    return false;
+    if (arr == NULL || count == 0 || out == NULL)
+    {
+        return false;
+    }
+
+    int *sorted = sorted_copy(arr, count);
+
+    if (sorted == NULL)
+    {
+        return false;
+    }
+
+    if (count % 2 == 1)
+    {
+        *out = (float)sorted[count / 2];
+    }
+    else
+    {
+        *out = ((float)sorted[count / 2 - 1] +
+                (float)sorted[count / 2]) / 2.0f;
+    }
+
+    free(sorted);
+
+    return true;
 }
 
 /*
@@ -345,9 +476,29 @@ bool find_median(const int *arr, size_t count, float *out)
 
 bool has_duplicates(const int *arr, size_t count)
 {
-    // TODO
-    (void)arr;
-    (void)count;
+    if (arr == NULL || count < 2)
+    {
+        return false;
+    }
+
+    int *sorted = sorted_copy(arr, count);
+
+    if (sorted == NULL)
+    {
+        return false;
+    }
+
+    for (size_t i = 0; i < count - 1; i++)
+    {
+        if (sorted[i] == sorted[i + 1])
+        {
+            free(sorted);
+            return true;
+        }
+    }
+
+    free(sorted);
+
     return false;
 }
 
@@ -360,10 +511,10 @@ bool has_duplicates(const int *arr, size_t count)
 
 int compare_students_by_age(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    const Student *x = (const Student *)a;
+    const Student *y = (const Student *)b;
+
+    return (x->age > y->age) - (x->age < y->age);
 }
 
 /*
@@ -378,10 +529,15 @@ int compare_students_by_age(const void *a, const void *b)
 
 int compare_students_ranking(const void *a, const void *b)
 {
-    // TODO
-    (void)a;
-    (void)b;
-    return 0;
+    const Student *x = (const Student *)a;
+    const Student *y = (const Student *)b;
+
+    if (x->score != y->score)
+    {
+        return (x->score < y->score) - (x->score > y->score);
+    }
+
+    return strcmp(x->name, y->name);
 }
 
 /*
@@ -394,7 +550,10 @@ int compare_students_ranking(const void *a, const void *b)
 
 void rank_students(Student *students, size_t count)
 {
-    // TODO
-    (void)students;
-    (void)count;
+    if (students == NULL || count < 2)
+    {
+        return;
+    }
+
+    qsort(students, count, sizeof(Student), compare_students_ranking);
 }
