@@ -72,10 +72,21 @@ int compare_int_desc(const void *a, const void *b)
 
 int compare_float_asc(const void *a, const void *b)
 {
-    float x = *(const int *)a;
-    float y = *(const int *)b;
+    float x = *(const float *)a;
+    float y = *(const float *)b;
 
-    return (x > y) - (x < y);
+    if (x < y)
+    {
+        return -1;
+    }
+    else if (x > y)
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
 /*
